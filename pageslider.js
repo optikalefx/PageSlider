@@ -6,7 +6,8 @@ define(function (require) {
 
     return function PageSlider(container) {
 
-        var currentPage,
+        var self = this,
+            currentPage,
             stateHistory = [];
 
         this.back = function () {
@@ -14,30 +15,33 @@ define(function (require) {
         };
 
         // Use this function if you want PageSlider to automatically determine the sliding direction based on the state history
-        this.slidePage = function (page) {
+        self.slidePage = function (page, after) {
 
             var l = stateHistory.length,
                 state = window.location.hash;
 
             if (l === 0) {
                 stateHistory.push(state);
-                this.slidePageFrom(page);
+                self.slidePageFrom(page, after);
                 return;
             }
             if (state === stateHistory[l - 2]) {
                 stateHistory.pop();
-                this.slidePageFrom(page, 'page-left');
+                self.slidePageFrom(page, after, 'page-left');
             } else {
                 stateHistory.push(state);
-                this.slidePageFrom(page, 'page-right');
+                self.slidePageFrom(page, after, 'page-right');
             }
 
         };
 
         // Use this function directly if you want to control the sliding direction outside PageSlider
-        this.slidePageFrom = function (page, from) {
+        self.slidePageFrom = function (page, after, from) {
 
             container.append(page);
+
+            if (after)
+                after(page);
 
             if (!currentPage || !from) {
                 page.attr("class", "page page-center");
