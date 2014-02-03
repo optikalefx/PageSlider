@@ -1,0 +1,14 @@
+{
+  "name": "pageslider",
+  "version": "1.0.0",
+  "author": {
+    "name": "Christophe Coenraets <ccoenraets@gmail.com>"
+  },
+  "homepage": "http://knockoutjs.com/documentation/plugins-mapping.html",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:ccoenraets/PageSlider.git"
+  },
+  "devDependencies": {
+  }
+}
