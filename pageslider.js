@@ -14,6 +14,14 @@ define(function (require) {
             return currentPage;
         };
 
+        self.snip = function (query) {
+            $(query, "[data-PageSlider]").each(function (_, e) {
+                var i = stateHistory.indexOf($(e).attr('data-PageSlider'));
+                if (i >= 0)
+                    stateHistory.splice(i, 1);
+            });
+        }
+
         self.back = function () {
             var
                 prev = stateHistory.length - 2,
