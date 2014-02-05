@@ -32,7 +32,7 @@ define(function (require) {
         };
 
         // Use this function if you want PageSlider to automatically determine the sliding direction based on the state history
-        self.slidePage = function (page, after) {
+        self.slidePage = function (page, after, from) {
 
             var l = stateHistory.length,
                 state = page.attr('data-PageSlider');
@@ -47,10 +47,10 @@ define(function (require) {
             }
             if (state === stateHistory[l - 2]) {
                 stateHistory.pop();
-                self.slidePageFrom(page, after, 'page-left');
+                self.slidePageFrom(page, after, from || 'page-left');
             } else {
                 stateHistory.push(state);
-                self.slidePageFrom(page, after, 'page-right');
+                self.slidePageFrom(page, after, from || 'page-right');
             }
 
         };
@@ -62,7 +62,7 @@ define(function (require) {
 
             (after || function(page, next) { next(page); })(page, function(_page) {
                 page = _page || page;
-                
+
                 if (!currentPage || !from) {
                     page.attr("class", "page page-center");
                     currentPage = page;
@@ -77,7 +77,7 @@ define(function (require) {
                 });
             });
         };
-        
+
         self.slidePageCore = function(page, from, end) {
 
             // Position the page at the starting position of the animation
