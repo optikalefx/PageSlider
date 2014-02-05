@@ -10,6 +10,10 @@ define(function (require) {
             currentPage,
             stateHistory = [];
 
+        self.current = function () {
+            return currentPage;
+        };
+
         self.back = function () {
             var
                 prev = stateHistory.length - 2,
@@ -48,25 +52,32 @@ define(function (require) {
 
             container.append(page);
 
-            if (after)
-                after(page);
+            (after || function(page, next) { next(page); })(page, function(_page) {
+                page = _page || page;
+                
+                if (!currentPage || !from) {
+                    page.attr("class", "page page-center");
+                    currentPage = page;
+                    return;
+                }
 
-            if (!currentPage || !from) {
-                page.attr("class", "page page-center");
-                currentPage = page;
-                return;
-            }
+                self.slidePageCore(page, from, function (e) {
+                    if (from == "page-left")
+                        $(e.target).remove();
+                    else
+                        $(e.target).addClass("finished");
+                });
+            });
+        };
+        
+        self.slidePageCore = function(page, from, end) {
 
             // Position the page at the starting position of the animation
             page.attr("class", "page " + from);
             page.removeClass("finished");
 
-            currentPage.one('webkitTransitionEnd', function (e) {
-                if (from == "page-left")
-                    $(e.target).remove();
-                else
-                    $(e.target).addClass("finished");
-            });
+            if (end)
+                currentPage.one('webkitTransitionEnd', end);
 
             // Force reflow. More information here: http://www.phpied.com/rendering-repaint-reflowrelayout-restyle/
             container[0].offsetWidth;
