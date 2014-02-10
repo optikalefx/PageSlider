@@ -64,7 +64,8 @@ define(function (require) {
                 page = _page || page;
 
                 if (!currentPage || !from) {
-                    page.attr("class", "page page-center");
+                    page.addClass("page page-center");
+                    page.removeClass("page-left page-right");
                     currentPage = page;
                     return;
                 }
@@ -81,7 +82,8 @@ define(function (require) {
         self.slidePageCore = function(page, from, end) {
 
             // Position the page at the starting position of the animation
-            page.attr("class", "page " + from);
+            page.removeClass("page-left page-right page-center transition");
+            page.addClass("page " + from);
             page.removeClass("finished");
 
             if (end)
@@ -91,8 +93,10 @@ define(function (require) {
             container[0].offsetWidth;
 
             // Position the new page and the current page at the ending position of their animation with a transition class indicating the duration of the animation
-            page.attr("class", "page transition page-center");
-            currentPage.attr("class", "page transition " + (from === "page-left" ? "page-right" : "page-left"));
+            page.addClass("page transition page-center");
+            page.removeClass("page-left page-right");
+            currentPage.removeClass("page-left page-right page-center");
+            currentPage.addClass("page transition " + (from === "page-left" ? "page-right" : "page-left"));
             currentPage = page;
         };
 
