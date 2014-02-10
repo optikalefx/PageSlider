@@ -74,7 +74,7 @@ define(function (require) {
                     if (from == "page-left")
                         $(e.target).remove();
                     else
-                        $(e.target).addClass("finished");
+                        $(e.target).addClass("page-finished");
                 });
             });
         };
@@ -84,7 +84,7 @@ define(function (require) {
             // Position the page at the starting position of the animation
             page.removeClass("page-left page-right page-center transition");
             page.addClass("page " + from);
-            page.removeClass("finished");
+            page.removeClass("page-finished");
 
             if (end)
                 currentPage.one('webkitTransitionEnd', end);

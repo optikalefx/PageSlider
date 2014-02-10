@@ -5,12 +5,26 @@
     overflow: hidden;
 }
 
+.page-prepare,
+.page-prepare > div {
+    max-height: 100%;
+}
+
 .page-prepare {
     visibility: hidden;
 }
 
-.page {
+.page-left,
+.page-right,
+.page-center {
     visibility: visible;
+}
+
+.page-finished {
+    display: none;
+}
+
+.page {
     position: absolute;
     top: 0;
     left: 0;
