@@ -81,6 +81,9 @@ define(function (require) {
 
         self.slidePageCore = function(page, from, end) {
 
+            if (self.beforeSlidePage)
+                self.beforeSlidePage(page, from);
+
             // Position the page at the starting position of the animation
             page.removeClass("page-left page-right page-center transition");
             page.addClass("page " + from);
