@@ -73,8 +73,6 @@ define(function (require) {
                 self.slidePageCore(page, from, function (e) {
                     if (from == "page-left")
                         $(e.target).remove();
-                    else
-                        $(e.target).addClass("page-finished");
                 });
             });
         };
@@ -89,8 +87,11 @@ define(function (require) {
             page.addClass("page " + from);
             page.removeClass("page-finished");
 
-            if (end)
-                currentPage.one('webkitTransitionEnd', end);
+            currentPage.one('webkitTransitionEnd', function (e) {
+                $(e.target).addClass("page-finished");
+                if (end)
+                    end(e);
+            })
 
             // Force reflow. More information here: http://www.phpied.com/rendering-repaint-reflowrelayout-restyle/
             container[0].offsetWidth;
