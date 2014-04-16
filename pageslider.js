@@ -67,6 +67,8 @@ define(function (require) {
                     page.addClass("page page-center");
                     page.removeClass("page-left page-right");
                     currentPage = page;
+                    if (self.beforeSlidePage)
+                        self.beforeSlidePage(page, from);
                     return;
                 }
 
