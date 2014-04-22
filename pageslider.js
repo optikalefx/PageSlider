@@ -22,17 +22,19 @@ define(function (require) {
             });
         }
 
-        self.back = function () {
+        self.back = function(end) {
             var
                 prev = stateHistory.length - 2,
                 ret = prev >= 0;
             if (ret)
-                self.slidePage($("[data-PageSlider='" + stateHistory[prev] + "']"));
+                self.slidePage($("[data-PageSlider='" + stateHistory[prev] + "']"), undefined, undefined, end);
+            else if (end)
+                end();
             return ret;
         };
 
         // Use this function if you want PageSlider to automatically determine the sliding direction based on the state history
-        self.slidePage = function (page, after, from) {
+        self.slidePage = function (page, after, from, end) {
 
             var l = stateHistory.length,
                 state = page.attr('data-PageSlider');
@@ -42,21 +44,21 @@ define(function (require) {
 
             if (l === 0) {
                 stateHistory.push(state);
-                self.slidePageFrom(page, after);
+                self.slidePageFrom(page, after, undefined, end);
                 return;
             }
             if (state === stateHistory[l - 2]) {
                 stateHistory.pop();
-                self.slidePageFrom(page, after, from || 'page-left');
+                self.slidePageFrom(page, after, from || 'page-left', end);
             } else {
                 stateHistory.push(state);
-                self.slidePageFrom(page, after, from || 'page-right');
+                self.slidePageFrom(page, after, from || 'page-right', end);
             }
 
         };
 
         // Use this function directly if you want to control the sliding direction outside PageSlider
-        self.slidePageFrom = function (page, after, from) {
+        self.slidePageFrom = function (page, after, from, end) {
 
             container.append(page);
 
@@ -69,12 +71,16 @@ define(function (require) {
                     currentPage = page;
                     if (self.beforeSlidePage)
                         self.beforeSlidePage(page, from);
+                    if (end)
+                        end();
                     return;
                 }
 
-                self.slidePageCore(page, from, function (e) {
-                    if (from == "page-left")
-                        $(e.target).remove();
+                self.slidePageCore(page, from, function (oldPage) {
+                    if (from === "page-left")
+                        oldPage.not('.page-center').remove();
+                    if (end)
+                        end(oldPage);
                 });
             });
         };
@@ -89,10 +95,12 @@ define(function (require) {
             page.addClass("page " + from);
             page.removeClass("page-finished");
 
-            currentPage.one('webkitTransitionEnd', function (e) {
-                $(e.target).addClass("page-finished");
+            var oldPage = currentPage;
+            currentPage = page;
+            oldPage.one('webkitTransitionEnd', function (e) {
+                oldPage.not('.page-center').addClass("page-finished");
                 if (end)
-                    end(e);
+                    end(oldPage);
             })
 
             // Force reflow. More information here: http://www.phpied.com/rendering-repaint-reflowrelayout-restyle/
@@ -101,9 +109,8 @@ define(function (require) {
             // Position the new page and the current page at the ending position of their animation with a transition class indicating the duration of the animation
             page.addClass("page transition page-center");
             page.removeClass("page-left page-right");
-            currentPage.removeClass("page-left page-right page-center");
-            currentPage.addClass("page transition " + (from === "page-left" ? "page-right" : "page-left"));
-            currentPage = page;
+            oldPage.removeClass("page-left page-right page-center");
+            oldPage.addClass("page transition " + (from === "page-left" ? "page-right" : "page-left"));
         };
 
     };
